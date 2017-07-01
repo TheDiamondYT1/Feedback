@@ -12,7 +12,7 @@ class FeedbackCommand extends Command implements PluginIdentifiableCommand {
 	private $loader;
 
 	public function __construct(Loader $loader) {
-		parent::__construct("feedback", "Give feedback for the server.", "/feedback <text>");
+		parent::__construct("feedback", "Give feedback for the server.", "/feedback <read/text>");
 		$this->loader = $loader;
 		$this->setPermission("feedback.give");
 	}
@@ -20,11 +20,7 @@ class FeedbackCommand extends Command implements PluginIdentifiableCommand {
 	public function execute(CommandSender $sender, $label, array $args) {
 		if(!$this->testPermission($sender)) {
 			return false;
-		}
-		if(!$sender instanceof Player) {
-			$sender->sendMessage(TF::RED . "Silly console, why would you give feedback to yourself?");
-			return true;
-		}
+		}	
 		if(empty($args)) {
 			$sender->sendMessage(TF::RED . $this->getUsage());
 			return true;
@@ -47,6 +43,10 @@ class FeedbackCommand extends Command implements PluginIdentifiableCommand {
 			foreach($feedbacks[$page -1] as $feedback) {
 				$sender->sendMessage(TF::GREEN . $feedback["author"] . TF::AQUA . " " . $feedback["text"]);
 			}
+			return true;
+		}
+		if(!$sender instanceof Player) {
+			$sender->sendMessage(TF::RED . "Silly console, why would you give feedback to yourself?");
 			return true;
 		}
 		$this->getLoader()->addFeedback($sender->getName(), implode(" ", $args));

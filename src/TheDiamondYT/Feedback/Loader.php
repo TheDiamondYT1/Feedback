@@ -29,7 +29,10 @@ class Loader extends PluginBase implements Listener {
 	public function onPlayerJoin(PlayerJoinEvent $ev) {
 		$player = $ev->getPlayer();
 		if($player->hasPermission("feedback.read")) {
-			$player->sendMessage($this->getConfig()->get("header"));
+			$player->sendMessage(TF::GOLD . "There are " . count($this->feedback) . " feedback entries.");
+			if(!empty($this->feedback)) {
+				$player->sendMessage(TF::GOLD . "Read them with /feedback read");
+			}
 		}
 	}
 	
