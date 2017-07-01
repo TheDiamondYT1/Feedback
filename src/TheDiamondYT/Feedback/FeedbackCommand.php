@@ -14,18 +14,18 @@ class FeedbackCommand extends Command implements PluginIdentifiableCommand {
 	public function __construct(Loader $loader) {
 		parent::__construct("feedback", "Give feedback for the server.", "/feedback <read/text>");
 		$this->loader = $loader;
-		$this->setPermission("feedback.give");
 	}
 	
 	public function execute(CommandSender $sender, $label, array $args) {
-		if(!$this->testPermission($sender)) {
-			return false;
-		}	
 		if(empty($args)) {
 			$sender->sendMessage(TF::RED . $this->getUsage());
 			return true;
 		}
 		if($args[0] === "read") {
+			if(!$sender->hasPermission("feedback.read")) {
+				$sender->sendMessage(TF::RED . "No permission.");
+				return false;
+			}
 			$page = 1;
 			if(isset($args[1]) and is_numeric($args[1])) {
 				$page = (int) array_shift($args);
@@ -45,6 +45,10 @@ class FeedbackCommand extends Command implements PluginIdentifiableCommand {
 			}
 			return true;
 		}
+		if(!$sender->hasPermission("feedback.give")) {
+			$sender->sendMessage(TF::RED . "No permission.");
+			return false;
+		}	
 		if(!$sender instanceof Player) {
 			$sender->sendMessage(TF::RED . "Silly console, why would you give feedback to yourself?");
 			return true;
